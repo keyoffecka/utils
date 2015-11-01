@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivy-module version="2.0">
+  <info organisation="net.izedio" module="utils"/>
+
+  <configurations defaultconf="compile"
+                  defaultconfmapping="compile->*,!javadoc;provided->*,!javadoc;runtime->*,!javadoc;tool->*,!javadoc;test->*,!javadoc">
+
+    <conf name="compile"/>
+    <conf name="provided"/>
+    <conf name="runtime"/>
+    <conf name="tool"/>
+    <conf name="test"/>
+  </configurations>
+
+  <dependencies>
+	  <dependency org="ant-contrib" name="ant-contrib" rev="${ant-contrib.version}" conf="tool"/>
+  </dependencies>
+</ivy-module>

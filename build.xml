@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="utils" default="package" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<tstamp>
+		<format property="timestamp" pattern="yyyyMMddHHmmssSSS" locale="en"/>
+	</tstamp>
+
+	<property name="parent.prj.dir" value="${basedir}"/>
+
+	<property file="${basedir}/version-local.properties"/>
+	<property file="${basedir}/version.properties"/>
+
+	<property file="${basedir}/base-local.properties"/>
+	<property file="${basedir}/base.properties"/>
+	<property file="${basedir}/build-local.properties"/>
+	<property file="${basedir}/build.properties"/>
+
+	<path id="tool.classpath">
+		<fileset dir="${tool.lib.dir}" includes="*.jar"/>
+	</path>
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${tool.lib.dir}/ant-contrib-${ant-contrib.version}.jar"/>
+		</classpath>
+	</taskdef>
+
+	<target name="init" description="Creates directories not existing in the repository">
+		<mkdir dir="${tool.lib.dir}"/>
+		<mkdir dir="${js.lib.dir}"/>
+
+		<mkdir dir="${webapp.jscompiled.dir}"/>
+		<mkdir dir="${test.webapp.jscompiled.dir}"/>
+		<mkdir dir="${test.webapp.jslib.dir}"/>
+		<mkdir dir="${target.js.dir}"/>
+	</target>
+
+	<target name="clean" depends="clean-compile-dirs" description="Deletes all created files">
+		<delete includeemptydirs="true">
+			<fileset dir="${tool.lib.dir}" includes="**/*"/>
+			<fileset dir="${js.lib.dir}" includes="**/*"/>
+			<fileset file="bower.json"/>
+			<fileset file=".bowerrc"/>
+
+			<fileset dir="${test.webapp.jslib.dir}" includes="**/*"/>
+			<fileset dir="${target.dir}" includes="*.war"/>
+		</delete>
+	</target>
+
+	<target name="clean-compile-dirs" depends="init" description="Deletes compiled files">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${target.ts.dir}" includes="**/*"/>
+			<fileset dir="${webapp.jscompiled.dir}" includes="**/*"/>
+			<fileset dir="${test.webapp.jscompiled.dir}" includes="**/*"/>
+		</delete>
+	</target>
+
+	<target name="retrieve" depends="init,retrieve-jars,retrieve-js" description="Retrieves dependencies">
+	</target>
+
+	<target name="retrieve-js" description="Retrieves javascript dependencies">
+		<copy file="bower.json.tpl" tofile="bower.json" overwrite="true" filtering="true">
+			<filterset>
+				<filtersfile file="version.properties"/>
+				<filter token="timestamp" value="${timestamp}"/>
+			</filterset>
+		</copy>
+
+		<copy file="bower.rc.tpl" tofile=".bowerrc" overwrite="true" filtering="true">
+			<filterset>
+				<filter token="js.lib.path" value="${js.lib.path}"/>
+			</filterset>
+		</copy>
+
+		<exec executable="bower" failonerror="true">
+			<arg line="install"/>
+		</exec>
+	</target>
+
+	<target name="retrieve-jars" description="Retrieves java dependencies">
+		<available property="has.ivy.cache.dir" file="${ivy.cache.dir}"/>
+
+		<fail unless="has.ivy.cache.dir" message="Please set ivy.cache.dir=/path/to/your/ivy/cache/dir in your build-local.properties file."/>
+
+		<ivy:configure file="ivysettings.xml"/>
+
+		<ivy:retrieve conf="tool"
+									type="source,jar,bundle"
+									pattern="${tool.lib.dir}/([classifier])/[module]-[revision](-[classifier]).[ext]"
+									transitive="false"
+									sync="false"/>
+	</target>
+
+	<target name="copy-jslibs" description="Copies main and test javascript libraries">
+		<copy file="${js.lib.dir}/mocha/mocha.js" todir="${test.webapp.jslib.dir}"/>
+		<copy file="${js.lib.dir}/should/should.js" todir="${test.webapp.jslib.dir}"/>
+		<copy file="${js.lib.dir}/sinonjs/sinon.js" todir="${test.webapp.jslib.dir}"/>
+	</target>
+
+	<target name="compile-ts" description="Compiles main and test TypeScript sources into JavaScript">
+		<pathconvert property="ts.files" pathsep=" ">
+			<globmapper from="${basedir}/${src.dir.name}/*" to="*"/>
+			<path>
+				<fileset dir="${src.dir.name}" includes="**/*.ts"/>
+			</path>
+		</pathconvert>
+
+		<exec executable="tsc" dir="${src.dir.name}" failonerror="true">
+			<arg line="--noImplicitAny --nolib"/>
+			<arg line="--outDir ${target.ts.dir}"/>
+			<arg line="-t ES5"/>
+			<arg line="${ts.files}"/>
+		</exec>
+	</target>
+
+	<target name="copy-compiledjs" description="Copies compiled java script files to the webapp folder">
+		<copy todir="${webapp.jscompiled.dir}">
+			<fileset dir="${target.ts.main.dir}">
+				<include name="**/*.js"/>
+			</fileset>
+		</copy>
+		<copy todir="${test.webapp.jscompiled.dir}">
+			<fileset dir="${target.ts.test.dir}">
+				<include name="**/*.js"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="test-js" description="Runs javascript tests">
+		<pathconvert property="test.files" pathsep=",">
+			<path>
+				<fileset dir="${test.webapp.dir}">
+					<include name="*.html"/>
+				</fileset>
+			</path>
+		</pathconvert>
+
+		<foreach list="${test.files}" target="run-mocha-phantomejs" param="test.file"/>
+	</target>
+
+	<target name="run-mocha-phantomejs">
+		<exec executable="mocha-phantomjs" failonerror="true">
+			<arg line="-p ${phantomjs.path}"/>
+			<arg line="--no-color"/>
+			<arg line="${test.file}"/>
+		</exec>
+	</target>
+</project>

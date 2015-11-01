@@ -1,0 +1,6 @@
+/.bowerrc
+/bower.json
+/*-local.properties
+/target
+lib
+js-compiled
