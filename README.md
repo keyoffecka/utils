@@ -36,7 +36,9 @@ Event providers then use the same bu to notifier the listeners about an event.
 This project uses ant+ivy to compile and test the library.
 
 To initialise the build system:
-**ant retrieve**
+
+*ant retrieve*
 
 Then
-**ant**
+
+*ant*
