@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="utils" default="package" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="utils" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<tstamp>
 		<format property="timestamp" pattern="yyyyMMddHHmmssSSS" locale="en"/>
 	</tstamp>
@@ -32,7 +32,7 @@
 		<mkdir dir="${webapp.jscompiled.dir}"/>
 		<mkdir dir="${test.webapp.jscompiled.dir}"/>
 		<mkdir dir="${test.webapp.jslib.dir}"/>
-		<mkdir dir="${target.js.dir}"/>
+		<mkdir dir="${target.ts.dir}"/>
 	</target>
 
 	<target name="clean" depends="clean-compile-dirs" description="Deletes all created files">
@@ -144,5 +144,8 @@
 			<arg line="--no-color"/>
 			<arg line="${test.file}"/>
 		</exec>
+	</target>
+
+	<target name="build" depends="clean, retrieve, copy-jslibs, compile-ts, copy-compiledjs, test-js" description="Cleans and rebuilds the whole project.">
 	</target>
 </project>

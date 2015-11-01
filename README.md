@@ -31,3 +31,12 @@ If the future has already completed, the notification is sent immediately.
 ##Bus
 A simple message bus which allows listeners to subscribe to a particular event type;
 Event providers then use the same bu to notifier the listeners about an event.
+
+#Building
+This project uses ant+ivy to compile and test the library.
+
+To initialise the build system:
+**ant retrieve**
+
+Then
+**ant**
