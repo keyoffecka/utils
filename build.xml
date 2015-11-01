@@ -127,6 +127,10 @@
 	</target>
 
 	<target name="test-js" description="Runs javascript tests">
+		<available property="has.phantomjs.path" file="${phantomjs.path}"/>
+
+		<fail unless="has.phantomjs.path" message="Please set phantomjs.path=/path/to/your/phantomjs/executable in your build-local.properties file."/>
+
 		<pathconvert property="test.files" pathsep=",">
 			<path>
 				<fileset dir="${test.webapp.dir}">

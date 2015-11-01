@@ -33,7 +33,10 @@ A simple message bus which allows listeners to subscribe to a particular event t
 Event providers then use the same bu to notifier the listeners about an event.
 
 #Building
-This project uses ant+ivy to compile and test the library.
+This project uses ant+ivy to compile and test the library. You will also need
+*npm,
+*bower,
+*and phantomjs executables.
 
 To initialise the build system:
 
@@ -42,3 +45,6 @@ To initialise the build system:
 Then
 
 *ant*
+
+##Notice
+This was only tested in Linux
