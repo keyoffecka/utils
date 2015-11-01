@@ -34,9 +34,9 @@ Event providers then use the same bu to notifier the listeners about an event.
 
 #Building
 This project uses ant+ivy to compile and test the library. You will also need
-#npm,
-#bower,
-#and phantomjs executables.
+*npm,
+*bower,
+*and phantomjs executables.
 
 To initialise the build system:
 
