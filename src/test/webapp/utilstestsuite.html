@@ -1,1 +1,22 @@
-/private/prj/pet/reacttest/reacttest-web/src/test/webapp/utilstestsuite.html
+
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+
+    <script src="lib/mocha.js"></script>
+    <script src="lib/should.js"></script>
+    <script src="lib/sinon.js"></script>
+
+    <script>
+      mocha.setup({ui: 'bdd'});
+    </script>
+
+    <script src="../../main/webapp/js-compiled/utils.js"></script>
+
+    <script src="js-compiled/utils.test.js"></script>
+
+    <script>
+      mocha.run();
+    </script>
+  </head>
+</html>

@@ -1,1 +1,39 @@
-/private/.cache/echo/Dropbox/private/prj/ivysettings.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivysettings>
+  <properties file="${basedir}/${version-local.properties"/>
+  <properties file="${basedir}/${version.properties"/>
+  <properties file="${basedir}/${build-local.properties}"/>
+  <properties file="${basedir}/${build.properties}"/>
+
+  <settings defaultResolver="chained"/>
+
+  <resolvers>
+    <chain name="chained" returnFirst="true">
+      <ibiblio name="jBoss Releases"
+               m2compatible="true"
+               usepoms="false"
+               checkmodified="true"
+               root="https://repository.jboss.org/nexus/content/repositories/releases/"/>
+
+      <ibiblio name="Sonatype Staging Repository"
+               m2compatible="true"
+               usepoms="false"
+               checkmodified="true"
+               root="http://oss.sonatype.org/content/groups/staging/"/>
+
+      <ibiblio name="Sonatype OSS Snapshot Repository"
+               m2compatible="true"
+               useMavenMetadata="true"
+               usepoms="false"
+               checkmodified="true"
+               root="http://oss.sonatype.org/content/repositories/snapshots"/>
+
+      <ibiblio name="ibiblio" m2compatible="true" />
+    </chain>
+  </resolvers>
+
+  <caches default="storage">
+    <cache name="storage" basedir="${ivy.cache.dir}"/>
+  </caches>
+</ivysettings>
